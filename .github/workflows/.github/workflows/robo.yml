@@ -1,0 +1,31 @@
+name: Executar Robo Hidrologico RS
+
+on:
+  schedule:
+    # Roda a cada 1 hora automaticamente
+    - cron: '0 * * * *'
+  workflow_dispatch: # Permite rodar manualmente com um clique
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar Código do Repositório
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar Bibliotecas
+        run: |
+          pip install -r requirements.txt
+
+      - name: Executar Script
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+        run: |
+          python main.py
